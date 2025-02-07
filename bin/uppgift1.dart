@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:uppgift1/models/person.dart';
 import 'package:uppgift1/models/vehicle.dart';
 
@@ -10,6 +9,4 @@ void main() {
   var person = Person(namn: 'Justine', personnummer: 1122334);
   print(person);
 
-  var vehicle = Vehicle(registreringsnummer: '123wdb', typ: 'car', owner: Person(namn: 'Justine', personnummer: 123456));
-  print(vehicle);
 }

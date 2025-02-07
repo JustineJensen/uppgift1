@@ -1,7 +1,7 @@
 import 'package:uppgift1/models/person.dart';
 import 'package:uppgift1/models/vehicleType.dart';
 
-abstract class Vehicle {
+ abstract class Vehicle{
   late String _registreringsNummer;
   late Vehicletype _typ;
   late Person _owner;

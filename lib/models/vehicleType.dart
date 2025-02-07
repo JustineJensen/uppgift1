@@ -1,4 +1,4 @@
-enum Vehicletype {
+enum VehicleType {
   
 Bil, Motorcycle,Lastbil
 }

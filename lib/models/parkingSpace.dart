@@ -2,7 +2,8 @@ class ParkingSpace {
   late int _id;
   late String _adress;
   late double _pricePerHour;
-
+  
+//constructor
 ParkingSpace({required int id, 
 required  String adress, 
 required double pricePerHour,

@@ -33,7 +33,5 @@ set endToime (DateTime? endTime)=> _endTime = endTime;
 @override
 String toString(){
   return'Parking{vehicle: ${_fordon.registeringsnummer},parkingSpace: ${_parkingSpace.id},startTime: $_startTime, endTime:$_endTime}';
-}
-
-  
+} 
 }

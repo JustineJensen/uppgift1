@@ -1,34 +1,46 @@
 import 'package:uppgift1/models/person.dart';
+import 'package:uppgift1/services/repository.dart';
 
-class PersonRepository {
-  static final PersonRepository _instance = PersonRepository._internal();
-  final List <Person>_person =[];
+class PersonRepository extends Repository<Person,int> {
+  
+  final List<Person> _persons =[];
+  int _nextId = 1;
 
-  PersonRepository._internal();
-
-// The same instance will be returned when ever the PersonRepository is called
-  factory PersonRepository(){
-    return _instance;
+  @override
+  Person add(Person entity) {
+    entity.id =_nextId ++;
+    _persons.add(entity);
+    return entity;
   }
-  //Add a person 
-  void add(Person person){
-    if(!person.isValid()){
-      throw Exception("Invalid Person data");
+
+  @override
+  void deleteById(int id) {
+    _persons.removeWhere((Person)=> Person.id ==id);
+  }
+
+  @override
+  List<Person> findAll() {
+   return _persons;
+  }
+
+  @override
+  Person findById(int id) {
+  return _persons.firstWhere((person)=> person.id ==id, orElse:()=> null);
+  }
+
+  @override
+  void update(Person entity) {
+    int index = _persons.indexWhere((p)=>p.id == entity.id);
+    if(index != -1){
+      _persons[index] = entity;
+    }else{
+      throw Exception("Person med ID ${entity.id} hittades inte.");
     }
-    _person.add(person);
   }
-  //Get all person
-List<Person> getAll(){
-  return List.unmodifiable(_person);
-}
-Person? getById(String id) {
-  try{
-    return _person.firstWhere((p)=> p.id == id);
-  }catch(e){
-    return null;
+  int getNextId(){
+    return _nextId;
   }
-    
-}
+  
 
 
 }

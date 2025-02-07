@@ -15,7 +15,7 @@ class Person {
 
   // Getters
   String get namn => _namn;
-  int get personnummer => _personNummer;
+  int get personNummer => _personNummer;
   int get id => _id;
 
   // Setters

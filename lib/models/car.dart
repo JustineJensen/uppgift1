@@ -4,7 +4,7 @@ import 'package:uppgift1/models/vehicleType.dart';
 
 class Car extends Vehicle{
   late String _color;
-
+  //Constructor 
     Car({
     required String registreringsNummer,
     required VehicleType typ,
@@ -21,7 +21,7 @@ class Car extends Vehicle{
     if (color.isEmpty){
       _color = color;
     }else{
-      throw Exception("Color cannot be empty. ")
+      throw Exception("Color cannot be empty.");
     }
   }
    @override

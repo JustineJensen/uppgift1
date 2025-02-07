@@ -1,4 +1,4 @@
-abstract class CrudService<T, ID> {
+abstract class Repository<T, ID> {
   T findById(ID id);
   List<T> findAll();
   T add(T entity);

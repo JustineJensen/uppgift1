@@ -46,6 +46,15 @@ class ParkingController {
     }
 
   }
+  void findParkingById(int id){
+    try{
+      Parking parking = _parkingRepository.findById(id);
+      print("\n Parking hittade: $parking");
+    }catch(e){
+      print("\n Fel:${e.toString()}");
+    }
+  }
+
 }
    
   

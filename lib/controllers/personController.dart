@@ -17,7 +17,7 @@ final PersonRepository personRepository;
     personRepository.add(newPerson);
     print(("\nPerson tillagd: ${newPerson.namn} med ID: ${newPerson.id}"));
 
-}
+  }
    List<Person> showAllPersons(){
     return personRepository.findAll();
    }
@@ -35,5 +35,14 @@ final PersonRepository personRepository;
     personRepository.deleteById(id);
     print ("\n Person borttagen");
    }
+  
+  void findPersonById(int id){
+    try{
+      Person person = personRepository.findById(id);
+      print("\n Person hittade: $person");
+    }catch(e){
+      print("\n Fel:${e.toString()}");
+    }
+  }
 
 }

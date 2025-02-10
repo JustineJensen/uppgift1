@@ -22,7 +22,7 @@ class Parking {
   _endTime = endTime;
 
   // Getters
-  int get id => id;
+  int get id => _id;
   Vehicle get vehicle => _fordon;
   ParkingSpace get parkingSpace =>_parkingSpace;
   DateTime get startTime => _startTime;
@@ -30,13 +30,13 @@ class Parking {
 
   //setters
   set id(int id)=> _id = id;
-  set Vehicle(Vehicle fordon) => _fordon = fordon;
-  set ParkingSpace (ParkingSpace parkingSpace)=> _parkingSpace = parkingSpace;
+  set fordon(Vehicle value) => _fordon = value;
+  set parkingSpace (ParkingSpace value)=> _parkingSpace = parkingSpace;
   set startTime(DateTime startTime)=> _startTime = startTime;
-  set endToime (DateTime? endTime)=> _endTime = endTime;
+  set endTime (DateTime? endTime)=> _endTime = endTime;
 
   @override
   String toString(){
-    return 'Parking{id: $_id, vehicle: ${_fordon.registeringsnummer}, parkingSpace: ${_parkingSpace.id}, startTime: $_startTime, endTime: $_endTime}';
+    return 'Parking{id: $_id, vehicle: ${_fordon.registreringsNummer}, parkingSpace: ${_parkingSpace.id}, startTime: $_startTime, endTime: $_endTime}';
     }
 } 

@@ -37,6 +37,3 @@ final PersonRepository personRepository;
    }
 
 }
-extension on int {
-  get length => null;
-}

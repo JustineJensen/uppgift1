@@ -2,31 +2,41 @@ import 'package:uppgift1/models/vehicle.dart';
 import 'package:uppgift1/controllers/repository.dart';
 
 class Vehiclerepository extends Repository<Vehicle,int> {
+  final List<Vehicle> _vehicle =[];
+ int _nextId =1;
   @override
   Vehicle add(Vehicle entity) {
-    // TODO: implement add
-    throw UnimplementedError();
+    entity.id = _nextId ++;
+    _vehicle.add(entity);
+    return entity;
   }
 
   @override
   void deleteById(int id) {
-    // TODO: implement deleteById
+    _vehicle.removeWhere((Vehicle)=>Vehicle.id == id);
   }
 
   @override
   List<Vehicle> findAll() {
-    // TODO: implement findAll
-    throw UnimplementedError();
+    return _vehicle;
   }
 
   @override
   Vehicle findById(int id) {
-    // TODO: implement findById
-    throw UnimplementedError();
+    return _vehicle.firstWhere((vehicle)=> vehicle.id == id,orElse:()=>  throw Exception("Vehicle med ID $id hittades inte"),);
   }
 
   @override
   void update(Vehicle entity) {
-    // TODO: implement update
+    int index = _vehicle.indexWhere((vehicle)=>vehicle.id == entity.id);
+    if(index != -1){
+      _vehicle[index]= entity;
+    }else{
+      throw Exception("Vehicle med ID ${entity.id} hittades inte.")
+    }
+
+     int getNextId(){
+    return _nextId;
+  }
   }
 }

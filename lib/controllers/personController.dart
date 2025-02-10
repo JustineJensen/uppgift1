@@ -1,17 +1,17 @@
 import 'package:uppgift1/models/person.dart';
 import 'package:uppgift1/repositories/personRepository.dart';
-class Personservice {
+class PersonController {
 final PersonRepository personRepository;
 
-  Personservice({required this.personRepository});
+  PersonController({required this.personRepository});
   
-  void createPerson(String name, String personNummer){
-    if(name.isEmpty || personNummer.length !=12){
+  void createPerson(String name, int personNummer){
+    if(name.isEmpty || personNummer.toString().length !=12){
       throw Exception("Fel Personnummer eller Name! Försök igen");
     }
     Person newPerson = Person(
       namn: name,
-      personNummer: int.parse(personNummer),
+      personNummer: personNummer,
       id: personRepository.getNextId(),
     );
     personRepository.add(newPerson);
@@ -21,10 +21,10 @@ final PersonRepository personRepository;
    List<Person> showAllPersons(){
     return personRepository.findAll();
    }
-   void updatePerson(int id, String newName){
+   void updatePerson(int id, String newName, int personNumber){
     Person? person = personRepository.findById(id);
     if(person==null){
-      throw Exception("\nPerson hittades inte")
+      throw Exception("\nPerson hittades inte");
     }
     person.namn = newName;
     person.personNummer;
@@ -36,4 +36,7 @@ final PersonRepository personRepository;
     print ("\n Person borttagen");
    }
 
+}
+extension on int {
+  get length => null;
 }

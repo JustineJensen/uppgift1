@@ -1,5 +1,5 @@
 import 'package:uppgift1/models/person.dart';
-import 'package:uppgift1/services/repository.dart';
+import 'package:uppgift1/controllers/repository.dart';
 
 class PersonRepository extends Repository<Person,int> {
   
@@ -25,7 +25,8 @@ class PersonRepository extends Repository<Person,int> {
 
   @override
   Person findById(int id) {
-  return _persons.firstWhere((person)=> person.id ==id, orElse:()=> null);
+  return _persons.firstWhere((person)=> person.id ==id, orElse:()=>
+  throw Exception("Person med ID $id hittades inte"),);
   }
 
   @override

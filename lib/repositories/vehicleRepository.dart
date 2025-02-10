@@ -1,5 +1,5 @@
 import 'package:uppgift1/models/vehicle.dart';
-import 'package:uppgift1/services/repository.dart';
+import 'package:uppgift1/controllers/repository.dart';
 
 class Vehiclerepository extends Repository<Vehicle,int> {
   @override

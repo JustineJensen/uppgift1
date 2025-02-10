@@ -1,5 +1,5 @@
 import 'package:uppgift1/models/parking.dart';
-import 'package:uppgift1/services/repository.dart';
+import 'package:uppgift1/controllers/repository.dart';
 
 class Parkingspacerepository extends Repository<Parking,int> {
   @override

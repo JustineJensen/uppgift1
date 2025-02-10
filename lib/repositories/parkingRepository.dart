@@ -1,11 +1,12 @@
 import 'package:uppgift1/models/parking.dart';
-import 'package:uppgift1/services/repository.dart';
+import 'package:uppgift1/controllers/repository.dart';
 
 class Parkingrepository extends Repository<Parking,int> {
+  final List<Parking> _parking =[];
+ 
   @override
-  add(entity) {
-    // TODO: implement add
-    throw UnimplementedError();
+  void add( Parking parking) {
+    _parking.add(parking);
   }
 
   @override

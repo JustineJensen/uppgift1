@@ -28,7 +28,7 @@ class ParkingController {
         print(parking);
       });
       }
-    }
+  }
   void updateParking(Parking updatedParking) {
     try {
       _parkingRepository.update(updatedParking);

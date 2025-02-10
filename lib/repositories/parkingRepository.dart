@@ -1,7 +1,7 @@
 import 'package:uppgift1/models/parking.dart';
 import 'package:uppgift1/controllers/repository.dart';
 
-class Parkingrepository extends Repository<Parking,int> {
+class ParkingRepository extends Repository<Parking,int> {
   final List<Parking> _parkings =[];
   int _nextId = 1;
  

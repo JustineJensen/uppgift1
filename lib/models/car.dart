@@ -10,7 +10,8 @@ class Car extends Vehicle{
     required VehicleType typ,
     required Person owner,
     required String color,
-  }) : super(registreringsNummer: registreringsNummer, typ: typ, owner: owner) {
+    required int id,
+  }) : super(id:id,registreringsNummer: registreringsNummer, typ: typ, owner: owner) {
     _color = color;
   }
   // Getters
@@ -26,6 +27,6 @@ class Car extends Vehicle{
   }
    @override
   String toString() {
-    return 'Car{registreringsnummer: $registreringsNummer, typ: $typ, owner: ${owner.namn}, color: $_color}';
+    return 'Car{id: $id,registreringsnummer: $registreringsNummer, typ: $typ, owner: ${owner.namn}, color: $_color}';
   }
 }

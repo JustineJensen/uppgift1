@@ -171,7 +171,6 @@ void handleParkingPlaces(){
         }
 
         try {
-              // Hämta befintlig parkeringsplats
               ParkingSpace existingSpace = parkingSpaceRepository.findById(idToUpdate);
 
               stdout.write("\nAnge ny adress (lämna tomt för att behålla befintlig): ");
@@ -179,8 +178,7 @@ void handleParkingPlaces(){
               stdout.write("\nAnge nytt pris per timme (lämna tomt för att behålla befintligt): ");
               String? newPriceInput = stdin.readLineSync();
               double? newPricePerHour = newPriceInput!.isNotEmpty ? double.tryParse(newPriceInput) : existingSpace.pricePerHour;
-              
-              // Skapa en uppdaterad kopia av parkeringsplatsen
+            
               ParkingSpace updatedSpace = ParkingSpace(
                 id: existingSpace.id,
                 adress: newAdress!.isNotEmpty ? newAdress : existingSpace.adress,
@@ -272,10 +270,8 @@ void handleVehicles() {
         final vehicles = vehicleController.getAllVehicles();
         vehicles.forEach((v) {
           if (v is Car) {
-            // For cars, include the color
             print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ}, Färg: ${v.color}");
           } else {
-            // For non-car vehicles, exclude the color
             print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ}");
           }
         });
@@ -307,7 +303,8 @@ void handleVehicles() {
     print("1. Skapa ny parkering");
     print("2. Visa alla parkeringar");
     print("3. Ta bort parkering");
-    print("4. Tillbaka till huvudmenyn");
+    print("4. Beräkna kostnad för parkeringen");
+    print("5. Tillbaka till huvudmenyn");
     stdout.write("Välj ett alternativ (1-4): ");
 
     String? choice = stdin.readLineSync();
@@ -329,7 +326,6 @@ void handleVehicles() {
           Vehicle vehicle = vehicleController.getVehicleByRegNum(regNum);
           ParkingSpace parkingSpace = parkingSpaceRepository.findById(parkingSpaceId);
 
-          // Create the parking
           parkingController.createParking(
             vehicle,
             parkingSpace,
@@ -391,7 +387,6 @@ void handleVehicles() {
           } catch (e) {
             print("\nFel: ${e.toString()}");
         }
-  
         break;
       case "5":
         print("\nTillbaka till huvudmenyn...");

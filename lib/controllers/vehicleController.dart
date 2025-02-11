@@ -35,7 +35,6 @@ class VehicleController {
     }
   }
 
-  // Uppdatera fordon
   void updateVehicle(int id, String newRegNum, VehicleType newTyp, Person newOwner,String newColor) {
     try {
       Vehicle updatedVehicle = Car(id: id, registreringsNummer: newRegNum, typ: newTyp, owner: newOwner,color:newColor);
@@ -46,7 +45,6 @@ class VehicleController {
     }
   }
 
-  // Ta bort ett fordon
   void deleteById(int id) {
     try {
       vehicleRepository.deleteById(id);
@@ -67,5 +65,11 @@ class VehicleController {
   vehicleRepository.deleteById(vehicleToDelete.id);
   print("\nFordon med registreringsnummer '$registreringsNummer' har tagits bort.");
 }
-
+Vehicle getVehicleByRegNum(String regNum) {
+    try {
+      return vehicleRepository.findByRegNum(regNum);
+    } catch (e) {
+      throw Exception("Fordon med registreringsnummer $regNum hittades inte.");
+    }
+  }
 }

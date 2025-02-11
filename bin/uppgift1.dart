@@ -411,9 +411,23 @@ void handleVehicles() {
     print("\nFel: Ange ett giltigt parkerings-ID!");
     return;
   }
+  stdout.write("\nAnge sluttid (YYYY-MM-DD HH:MM): ");
+  String? endTime = stdin.readLineSync();
 
-  double cost = parkingController.calculateParkingCost(parkingId);
-  if (cost > 0) {
-    print("\nTotal parkeringskostnad: ${cost.toStringAsFixed(2)} SEK");
+  if (endTime == null || endTime.isEmpty) {
+    print("\nFel: Sluttid måste anges!");
+    return;
+  }
+
+  try {
+    double cost = parkingController.calculateParkingCost(parkingId, endTime);
+    if (cost > 0) {
+      print("\nTotal parkeringskostnad: ${cost.toStringAsFixed(2)} SEK");
+    } else {
+      print("\nFel: Parkeringen kan inte beräknas.");
+    }
+  } catch (e) {
+    print("\nFel: ${e.toString()}");
   }
 }
+

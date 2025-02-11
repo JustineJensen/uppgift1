@@ -1,4 +1,5 @@
 import 'package:uppgift1/models/person.dart';
+import 'package:uppgift1/models/vehicle.dart';
 import 'package:uppgift1/repositories/personRepository.dart';
 class PersonController {
 final PersonRepository personRepository;

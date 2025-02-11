@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:uppgift1/models/vehicle.dart';
 class Person {
   String _namn;
   int _personNummer;
@@ -35,8 +37,8 @@ class Person {
       throw Exception("ID must be positive");
     }
   }
- 
   @override
-  String toString() => 'Person(_namn: $_namn, _personNummer: $_personNummer, _id: $_id)';
-  
+  String toString() {
+    return 'Person(namn: $namn, personNummer: $personNummer, id: $id, vehicles: $vehicles)';
+  }
 }

@@ -6,7 +6,7 @@ import 'package:uppgift1/models/vehicleType.dart';
 import 'package:uppgift1/repositories/vehicleRepository.dart';
 
 class VehicleController {
-  final Vehiclerepository vehicleRepository;
+  final VehicleRepository vehicleRepository;
 
   VehicleController({required this.vehicleRepository});
 
@@ -19,7 +19,7 @@ class VehicleController {
       owner: owner,
       color: color,
     );
-    return Vehiclerepository().add(newVehicle);
+    return vehicleRepository.add(newVehicle);
   }
 
 
@@ -36,9 +36,9 @@ class VehicleController {
   }
 
   // Uppdatera fordon
-  void updateVehicle(int id, String newRegNum, VehicleType newTyp, Person newOwner) {
+  void updateVehicle(int id, String newRegNum, VehicleType newTyp, Person newOwner,String newColor) {
     try {
-      Vehicle updatedVehicle = Car(id: id, registreringsNummer: newRegNum, typ: newTyp, owner: newOwner,color:color);
+      Vehicle updatedVehicle = Car(id: id, registreringsNummer: newRegNum, typ: newTyp, owner: newOwner,color:newColor);
       vehicleRepository.update(updatedVehicle);
       print("Fordon med ID $id uppdaterat.");
     } catch (e) {
@@ -47,7 +47,7 @@ class VehicleController {
   }
 
   // Ta bort ett fordon
-  void deleteVehicle(int id) {
+  void deleteById(int id) {
     try {
       vehicleRepository.deleteById(id);
       print("Fordon med ID $id har tagits bort.");
@@ -55,4 +55,17 @@ class VehicleController {
       print("Fel vid borttagning: ${e.toString()}");
     }
   }
+
+  void deleteVehicle(String registreringsNummer) {
+  Vehicle? vehicleToDelete = vehicleRepository.findByRegNum(registreringsNummer);
+
+  if (vehicleToDelete == null) {
+    print("\nFel: Fordonet kunde inte tas bort eftersom det inte hittades!");
+    return;
+  }
+
+  vehicleRepository.deleteById(vehicleToDelete.id);
+  print("\nFordon med registreringsnummer '$registreringsNummer' har tagits bort.");
+}
+
 }

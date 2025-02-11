@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:uppgift1/controllers/parkingController.dart';
 import 'package:uppgift1/controllers/parkingSpaceController.dart';
+import 'package:uppgift1/controllers/vehicleController.dart';
 import 'package:uppgift1/models/car.dart';
 import 'package:uppgift1/models/parkingSpace.dart';
 import 'package:uppgift1/models/person.dart';
@@ -11,14 +12,16 @@ import 'package:uppgift1/repositories/parkingRepository.dart';
 import 'package:uppgift1/repositories/parkingSpaceRepository.dart';
 import 'package:uppgift1/repositories/personRepository.dart';
 import 'package:uppgift1/controllers/personController.dart';
+import 'package:uppgift1/repositories/vehicleRepository.dart';
 
   final PersonRepository personRepository = PersonRepository();
   final PersonController  personController = PersonController(personRepository: personRepository);
   final ParkingRepository parkingRepository = ParkingRepository();
   final ParkingController parkingController = ParkingController(parkingRepository);
   final ParkingSpaceRepository parkingSpaceRepository = ParkingSpaceRepository();
-  final ParkingspaceController parkingspaceController = ParkingspaceController(parkingSpaceRepository: parkingSpaceRepository);
-
+  final ParkingSpaceController parkingspaceController = ParkingSpaceController(parkingSpaceRepository: parkingSpaceRepository);
+  final VehicleController vehicleController = VehicleController(vehicleRepository: vehicleRepository);
+  final VehicleRepository vehicleRepository =VehicleRepository();
 void main() {
   while(true){
      print('**** Välkommen till Parkeringsappen! ****');
@@ -148,12 +151,12 @@ void handleParkingPlatser() {
         }
 
         ParkingSpace newSpace = ParkingSpace(id: id, adress: adress, pricePerHour: pricePerHour);
-        parkingRepository.addParkingSpace(newSpace);
+        parkingSpaceRepository.add(newSpace);
         print("\nParkeringsplats skapad framgångsrikt!");
         break;
 
       case "2":
-        final spaces = parkingRepository.listAllParkingSpaces();
+        final spaces = parkingSpaceRepository.findAll();
         if (spaces.isEmpty) {
           print("\nInga parkeringsplatser hittades.");
         } else {
@@ -170,18 +173,30 @@ void handleParkingPlatser() {
           break;
         }
 
-        stdout.write("\nAnge ny adress: ");
-        String? newAdress = stdin.readLineSync();
-        stdout.write("\nAnge nytt pris per timme: ");
-        double? newPrice = double.tryParse(stdin.readLineSync() ?? "");
+        try {
+  // Hämta befintlig parkeringsplats
+  ParkingSpace existingSpace = parkingSpaceRepository.findById(idToUpdate);
 
-        if (newAdress == null || newAdress.isEmpty || newPrice == null) {
-          print("\nFel: Ange giltiga värden för adress och pris!");
-          break;
-        }
+  stdout.write("\nAnge ny adress (lämna tomt för att behålla befintlig): ");
+  String? newAdress = stdin.readLineSync();
+  stdout.write("\nAnge nytt pris per timme (lämna tomt för att behålla befintligt): ");
+  String? newPriceInput = stdin.readLineSync();
+  double? newPricePerHour = newPriceInput!.isNotEmpty ? double.tryParse(newPriceInput) : existingSpace.pricePerHour;
 
-        parkingRepository.updateParkingSpace(idToUpdate, newAdress, newPrice);
-        print("\nParkeringsplats uppdaterad!");
+  // Skapa en uppdaterad kopia av parkeringsplatsen
+  ParkingSpace updatedSpace = ParkingSpace(
+    id: existingSpace.id,
+    adress: newAdress!.isNotEmpty ? newAdress : existingSpace.adress,
+    pricePerHour: newPricePerHour!,
+  );
+        
+  // Uppdatera parkeringsplatsen i repositoryt
+  parkingSpaceRepository.update(updatedSpace);
+
+  print("\nParkeringsplats uppdaterad!");
+} catch (e) {
+  print("\nFel vid uppdatering: ${e.toString()}");
+}
         break;
 
       case "4":
@@ -193,7 +208,7 @@ void handleParkingPlatser() {
           break;
         }
 
-        parkingRepository.deleteParkingSpace(idToDelete);
+        parkingSpaceRepository.deleteById(idToDelete);
         print("\nParkeringsplats borttagen!");
         break;
 
@@ -248,8 +263,11 @@ void handleVehicles() {
 
         try {
           Person owner = personController.personRepository.findById(ownerId);
-          Vehicle newVehicle = Car(id: 1, registreringsNummer: regNum, typ: vehicleType, owner: owner, color: color);
-          personController.registerVehicle(ownerId, newVehicle);
+           if (owner == null) {
+              print("\nFel: Ägaren hittades inte!");
+              break;
+            }
+          Vehicle newVehicle = vehicleController.createVehicle(regNum,vehicleType,owner,color);         
           print("\nFordon registrerat framgångsrikt!");
         } catch (e) {
           print("\nFel: ${e.toString()}");
@@ -257,7 +275,7 @@ void handleVehicles() {
         break;
 
       case "2":
-        final vehicles = personController.listAllVehicles();
+        final vehicles = vehicleController.getAllVehicles();
         if (vehicles.isEmpty) {
           print("\nInga fordon hittades.");
         } else {
@@ -273,8 +291,7 @@ void handleVehicles() {
           print("\nFel: Ange ett giltigt registreringsnummer!");
           break;
         }
-
-        personController.deleteVehicle(regNumToDelete);
+        vehicleController.deleteVehicle(regNumToDelete);
         print("\nFordon borttaget!");
         break;
 

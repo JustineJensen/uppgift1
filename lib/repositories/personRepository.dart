@@ -15,7 +15,7 @@ class PersonRepository extends Repository<Person,int> {
 
   @override
   void deleteById(int id) {
-    _persons.removeWhere((Person)=> Person.id ==id);
+    _persons.removeWhere((person)=> person.id ==id);
   }
 
   @override

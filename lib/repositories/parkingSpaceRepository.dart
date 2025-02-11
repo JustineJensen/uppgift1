@@ -30,7 +30,7 @@ class ParkingSpaceRepository extends Repository<ParkingSpace,int> {
      }
    
      @override
-     void update(ParkingSpace entity) {
+     void update(ParkingSpace entity, String newAdress) {
        int index = _parkingSpace.indexWhere((space)=>space.id == entity.id);
        if(index != -1){
         _parkingSpace[index] = entity;

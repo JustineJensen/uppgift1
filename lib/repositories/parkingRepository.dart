@@ -6,7 +6,7 @@ class ParkingRepository extends Repository<Parking,int> {
   int _nextId = 1;
  
   @override
-  Parking add( Parking parking) {
+  Parking add(Parking parking) {
     parking.id = _nextId++;
     _parkings.add(parking);
     return parking;

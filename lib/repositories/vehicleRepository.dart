@@ -1,42 +1,50 @@
 import 'package:uppgift1/models/vehicle.dart';
 import 'package:uppgift1/controllers/repository.dart';
 
-class Vehiclerepository extends Repository<Vehicle,int> {
-  final List<Vehicle> _vehicle =[];
+class VehicleRepository extends Repository<Vehicle,int> {
+  final List<Vehicle> _vehicles =[];
  int _nextId =1;
   @override
-  Vehicle add(Vehicle entity) {
-    entity.id = _nextId ++;
-    _vehicle.add(entity);
-    return entity;
+  Vehicle add(Vehicle vehicle) {
+    vehicle.id = _vehicles.length + 1;
+    _vehicles.add(vehicle);
+    return vehicle;
   }
 
   @override
   void deleteById(int id) {
-    _vehicle.removeWhere((Vehicle)=>Vehicle.id == id);
+    _vehicles.removeWhere((vehicle)=>vehicle.id == id);
   }
-
+  
   @override
   List<Vehicle> findAll() {
-    return _vehicle;
+    return _vehicles;
   }
 
   @override
   Vehicle findById(int id) {
-    return _vehicle.firstWhere((vehicle)=> vehicle.id == id,orElse:()=>  throw Exception("Vehicle med ID $id hittades inte"),);
+    return _vehicles.firstWhere((vehicle)=> vehicle.id == id,orElse:()=>  throw Exception("Vehicle med ID $id hittades inte"),);
   }
 
   @override
   void update(Vehicle entity) {
-    int index = _vehicle.indexWhere((vehicle)=>vehicle.id == entity.id);
+    int index = _vehicles.indexWhere((vehicle)=>vehicle.id == entity.id);
     if(index != -1){
-      _vehicle[index]= entity;
+      _vehicles[index]= entity;
     }else{
-      throw Exception("Vehicle med ID ${entity.id} hittades inte.")
+      throw Exception("Vehicle med ID ${entity.id} hittades inte.");
     }
-
-     int getNextId(){
+  }
+   int getNextId(){
     return _nextId;
   }
-  }
+  Vehicle findByRegNum(String regNum) {
+  return _vehicles.firstWhere(
+    (vehicle) => vehicle.registreringsNummer == regNum,
+    orElse: () {
+      throw Exception("\nFel: Fordonet med registreringsnummer '$regNum' hittades inte!");
+    },
+  );
+}
+
 }

@@ -19,7 +19,7 @@ class Car extends Vehicle{
 
   // Setters
   set color( String color){
-    if (color.isEmpty){
+    if (color.isNotEmpty){
       _color = color;
     }else{
       throw Exception("Color cannot be empty.");

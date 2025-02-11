@@ -216,7 +216,7 @@ void handleParkingPlaces(){
 
 void handleVehicles() {
   while (true) {
-    print("\nDu har valt att hantera Fordon. Vad vill du göra?");
+    print("\n Du har valt att hantera Fordon. Vad vill du göra?");
     print("1. Registrera nytt fordon");
     print("2. Visa alla fordon");
     print("3. Ta bort fordon");
@@ -260,7 +260,7 @@ void handleVehicles() {
               break;
             }
           Vehicle newVehicle = vehicleController.createVehicle(regNum,vehicleType,owner,color);         
-          print("\nFordon registrerat framgångsrikt!");
+          print("\n Fordon registrerat framgångsrikt!");
         } catch (e) {
           print("\nFel: ${e.toString()}");
         }
@@ -270,9 +270,9 @@ void handleVehicles() {
         final vehicles = vehicleController.getAllVehicles();
         vehicles.forEach((v) {
           if (v is Car) {
-            print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ}, Färg: ${v.color}");
+            print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ.name}, Färg: ${v.color}");
           } else {
-            print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ}");
+            print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ.name}");
           }
         });
         break;
@@ -372,8 +372,6 @@ void handleVehicles() {
           print("\n Fel: Ange ett giltigt parkerings-ID!");
           break;
         }
-
-        try {
           stdout.write("\nAnge sluttid (YYYY-MM-DD HH:MM): ");
           String? endTime = stdin.readLineSync();
 
@@ -382,12 +380,15 @@ void handleVehicles() {
             break;
           }
 
+        try {
+          parkingController.endParking(parkingId, endTime);
           double cost = parkingController.calculateParkingCost(parkingId, endTime);
             print("\nParkeringskostnad: ${cost.toStringAsFixed(2)} SEK");
           } catch (e) {
             print("\nFel: ${e.toString()}");
         }
         break;
+        
       case "5":
         print("\nTillbaka till huvudmenyn...");
         return;

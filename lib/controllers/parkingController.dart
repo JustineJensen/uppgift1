@@ -62,21 +62,21 @@ class ParkingController {
   double calculateParkingCost(int parkerId,String endTimeStr){
     try{
       Parking parking = _parkingRepository.findById(parkerId);
+      DateFormat format = DateFormat("yyyy-MM-dd HH:mm");
+      DateTime endTime = format.parse(endTimeStr);
+      parking.endTime =endTime;
+      
       if(parking.endTime == null){
         print("Fel: Parkeringen är forfarnde aktiv. Avsluta parkering först");
         return 0.0;
       }
-      DateFormat format = DateFormat("yyyy-MM-dd HH:mm");
-      DateTime endTime = format.parse(endTimeStr);
-      
-      parking.endTime = endTime;
-
+     
       Duration duration = parking.endTime!.difference(parking.startTime);
       
-      double hours = duration.inMinutes/60;
-      double roundedHours = (hours <=1) ? 1.0: hours;
+      double hours = duration.inMinutes / 60;
+      double roundedHours = (hours <=1) ? 1.0 : hours;
 
-      double totalCost = roundedHours*parking.parkingSpace.pricePerHour;
+      double totalCost = roundedHours * parking.parkingSpace.pricePerHour;
       return totalCost;
       
       }catch(e){
@@ -84,6 +84,18 @@ class ParkingController {
       return 0.0;
     }
   }
+  void endParking(int parkingId, String endTimeStr) {
+  try {
+    Parking parking = _parkingRepository.findById(parkingId);
+    DateFormat format = DateFormat("yyyy-MM-dd HH:mm");
+    DateTime endTime = format.parse(endTimeStr);
+    parking.endTime = endTime;
+    print("\nParkering avslutad!");
+  } catch (e) {
+    print("\nFel: ${e.toString()}");
+  }
+}
+
 
 }
    

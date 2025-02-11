@@ -1,3 +1,4 @@
+import 'package:uppgift1/models/car.dart';
 import 'package:uppgift1/models/person.dart';
 import 'package:uppgift1/models/vehicleType.dart';
 
@@ -6,6 +7,7 @@ import 'package:uppgift1/models/vehicleType.dart';
   late String _registreringsNummer;
   late VehicleType _typ;
   late Person _owner;
+  
  
  // constructor
   Vehicle({required int id,required String registreringsNummer, required  VehicleType typ, required Person owner})

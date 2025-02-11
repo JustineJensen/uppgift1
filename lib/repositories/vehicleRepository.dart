@@ -39,12 +39,8 @@ class VehicleRepository extends Repository<Vehicle,int> {
     return _nextId;
   }
   Vehicle findByRegNum(String regNum) {
-  return _vehicles.firstWhere(
-    (vehicle) => vehicle.registreringsNummer == regNum,
-    orElse: () {
-      throw Exception("\nFel: Fordonet med registreringsnummer '$regNum' hittades inte!");
-    },
-  );
+  var vehicle = _vehicles.firstWhere((v) => v.registreringsNummer == regNum, orElse: () => throw Exception('Fordon inte hittat'));
+    return vehicle;
 }
 
 }

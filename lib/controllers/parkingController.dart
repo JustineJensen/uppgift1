@@ -3,6 +3,8 @@ import 'package:uppgift1/models/parking.dart';
 import 'package:uppgift1/models/parkingSpace.dart';
 import 'package:uppgift1/models/vehicle.dart';
 import 'package:uppgift1/repositories/parkingRepository.dart';
+import 'package:intl/intl.dart';
+
 
 class ParkingController {
   final ParkingRepository _parkingRepository;
@@ -19,7 +21,9 @@ class ParkingController {
     _parkingRepository.add(newParking);
     print('Ny parkering skapad: $newParking');
   }
-  void listAllParking(){
+  
+  List<Parking>listAllParking(){
+
     List<Parking> allParkings =_parkingRepository.findAll();
     if(allParkings.isEmpty){
       print("Inga parkering hittades");
@@ -28,6 +32,7 @@ class ParkingController {
         print(parking);
       });
       }
+      return allParkings;
   }
   void updateParking(Parking updatedParking) {
     try {
@@ -52,6 +57,31 @@ class ParkingController {
       print("\n Parking hittade: $parking");
     }catch(e){
       print("\n Fel:${e.toString()}");
+    }
+  }
+  double calculateParkingCost(int parkerId,String endTimeStr){
+    try{
+      Parking parking = _parkingRepository.findById(parkerId);
+      if(parking.endTime == null){
+        print("Fel: Parkeringen är forfarnde aktiv. Avsluta parkering först");
+        return 0.0;
+      }
+      DateFormat format = DateFormat("yyyy-MM-dd HH:mm");
+      DateTime endTime = format.parse(endTimeStr);
+      
+      parking.endTime = endTime;
+
+      Duration duration = parking.endTime!.difference(parking.startTime);
+      
+      double hours = duration.inMinutes/60;
+      double roundedHours = (hours <=1) ? 1.0: hours;
+
+      double totalCost = roundedHours*parking.parkingSpace.pricePerHour;
+      return totalCost;
+      
+      }catch(e){
+      print("\n Fel: ${e.toString()}");
+      return 0.0;
     }
   }
 

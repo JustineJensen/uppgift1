@@ -1,3 +1,3 @@
 enum VehicleType {
-Bil, Motorcycle,Lastbil, CAR
+Bil, Motorcycle,Lastbil, Car
 }

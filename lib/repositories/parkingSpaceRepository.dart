@@ -3,7 +3,7 @@ import 'package:uppgift1/controllers/repository.dart';
 import 'package:uppgift1/models/parkingSpace.dart';
 
 class ParkingSpaceRepository extends Repository<ParkingSpace,int> {
- final List<ParkingSpace>_parkingSpace=[];
+ final List<ParkingSpace>_parkingSpace =[];
      int _nextId=1;
    
      @override
@@ -30,10 +30,12 @@ class ParkingSpaceRepository extends Repository<ParkingSpace,int> {
      }
    
      @override
-     void update(ParkingSpace entity, String newAdress) {
+     void update(ParkingSpace entity) {
        int index = _parkingSpace.indexWhere((space)=>space.id == entity.id);
        if(index != -1){
         _parkingSpace[index] = entity;
+       }else{
+        throw Exception("Parkeringsplats med ID ${entity.id} finns inte.");
        }
      }
    

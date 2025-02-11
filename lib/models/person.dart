@@ -39,6 +39,6 @@ class Person {
   }
   @override
   String toString() {
-    return 'Person(namn: $namn, personNummer: $personNummer, id: $id, vehicles: $vehicles)';
+    return 'Person(namn: $namn, personNummer: $personNummer, id: $id)';
   }
 }

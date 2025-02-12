@@ -416,7 +416,7 @@ void handleParking(ParkingRepository parkingRepo, VehicleRepository vehicleRepo,
           print("\nFel: Ange ett giltigt ID!");
           break;
         }
-         case "4": // Calculate Parking Cost
+         case "4":
         stdout.write("\nAnge ID för parkeringen att beräkna kostnaden: ");
         int? parkingId = int.tryParse(stdin.readLineSync() ?? "");
 
@@ -478,7 +478,7 @@ void handleParking(ParkingRepository parkingRepo, VehicleRepository vehicleRepo,
             break;
           }
       
-          print("\n✅ Parkeringsplats med ID $newParkingSpaceId hittades och ska uppdateras.");
+          print("\nParkeringsplats med ID $newParkingSpaceId hittades och ska uppdateras.");
           parking.parkingSpace = newParkingSpace;
 
           stdout.write("\nAnge nytt startdatum och tid (YYYY-MM-DD HH:MM): ");
@@ -499,7 +499,7 @@ void handleParking(ParkingRepository parkingRepo, VehicleRepository vehicleRepo,
 
           parking.startTime = newStartTime;
           parkingRepo.update(parking);
-          print("\n✅ Parkeringen har uppdaterats!");
+          print("\nParkeringen har uppdaterats!");
           print("Ny info: ID: ${parking.id}, Fordon: ${parking.vehicle.registreringsNummer}, Parkeringsplats: ${parking.parkingSpace.id}, Starttid: ${parking.startTime}");
 
         } catch (e) {

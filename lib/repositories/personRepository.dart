@@ -1,5 +1,5 @@
 import 'package:uppgift1/models/person.dart';
-import 'package:uppgift1/controllers/repository.dart';
+import 'package:uppgift1/repositories/repository.dart';
 
 class PersonRepository extends Repository<Person,int> {
   
@@ -7,10 +7,10 @@ class PersonRepository extends Repository<Person,int> {
   int _nextId = 1;
 
   @override
-  Person add(Person entity) {
-    entity.id =_nextId ++;
-    _persons.add(entity);
-    return entity;
+  Person add(Person person) {
+    person.id =_nextId ++;
+    _persons.add(person);
+    return person;
   }
 
   @override

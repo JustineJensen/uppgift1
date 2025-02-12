@@ -1,5 +1,5 @@
 import 'package:uppgift1/models/parking.dart';
-import 'package:uppgift1/controllers/repository.dart';
+import 'package:uppgift1/repositories/repository.dart';
 import 'package:uppgift1/models/parkingSpace.dart';
 
 class ParkingSpaceRepository extends Repository<ParkingSpace,int> {

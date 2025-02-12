@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:uppgift1/controllers/parkingController.dart';
-import 'package:uppgift1/controllers/parkingSpaceController.dart';
-import 'package:uppgift1/controllers/vehicleController.dart';
 import 'package:uppgift1/models/car.dart';
+import 'package:uppgift1/models/parking.dart';
 import 'package:uppgift1/models/parkingSpace.dart';
 import 'package:uppgift1/models/person.dart';
 import 'package:uppgift1/models/vehicle.dart';
@@ -11,18 +9,15 @@ import 'package:uppgift1/models/vehicleType.dart';
 import 'package:uppgift1/repositories/parkingRepository.dart';
 import 'package:uppgift1/repositories/parkingSpaceRepository.dart';
 import 'package:uppgift1/repositories/personRepository.dart';
-import 'package:uppgift1/controllers/personController.dart';
 import 'package:uppgift1/repositories/vehicleRepository.dart';
 
-  final PersonRepository personRepository = PersonRepository();
-  final PersonController  personController = PersonController(personRepository: personRepository);
-  final ParkingRepository parkingRepository = ParkingRepository();
-  final ParkingController parkingController = ParkingController(parkingRepository);
-  final ParkingSpaceRepository parkingSpaceRepository = ParkingSpaceRepository();
-  final ParkingSpaceController parkingspaceController = ParkingSpaceController(parkingSpaceRepository: parkingSpaceRepository);
-  final VehicleController vehicleController = VehicleController(vehicleRepository: vehicleRepository);
-  final VehicleRepository vehicleRepository =VehicleRepository();
+  
 void main() {
+  var personRepo = PersonRepository();
+  var vehicleRepo = VehicleRepository();
+  var parkingSpaceRepo = ParkingSpaceRepository();
+  var parkingRepo = ParkingRepository();
+
   while(true){
      print('**** Välkommen till Parkeringsappen! ****');
      print('Vad vill du hantera? ');
@@ -32,179 +27,126 @@ void main() {
      print("4. Parkeringar");
      print("5. Avsluta");
      stdout.write("Välj ett alternativ (1-5): ");
-
+      
     String? choice = stdin.readLineSync();
      switch(choice){
       case "1":
-      handlePerson();
+      handlePerson(personRepo);
       break;
       case "2":
-      handleVehicles();
+      handleVehicles(vehicleRepo, personRepo);
       break;
       case "3":
-      handleParkingPlaces();
+      handleParkingPlaces(parkingSpaceRepo);
       break;
       case "4":
-      handleParking();
+      handleParking(parkingRepo, vehicleRepo, parkingSpaceRepo);
       break;
       case "5":
       print("\n Avslutar programmet");
       exit(0);
       default:
-      print("\nOgiltigt regitreringsnummer, försök igen! ");
+      print("\nOgiltigt val! ");
      }
   }
 }
 
-void handlePerson() {
+void handlePerson(PersonRepository personRepo) {
   while (true) {
     print("*****************************************");
-    print("\n** Du har valt att hantera Personer. Vad vill du göra**");
+    print("\n** Du har valt att hantera Personer. Vad vill du göra **");
     print("*****************************************");
     print("1. Skapa ny person");
     print("2. Visa alla personer");
     print("3. Uppdatera person");
     print("4. Ta bort person");
-    print("5. Tillbaka till huvudmenyn"); 
+    print("5. Tillbaka till huvudmenyn");
     print("*****************************************");
     stdout.write("Välj ett alternativ (1-5): ");
 
     String? choice = stdin.readLineSync();
     switch (choice) {
       case "1":
-        stdout.write("\n Ange namn:");
+        stdout.write("\n Ange namn: ");
         String? namn = stdin.readLineSync();
-        stdout.write("\n Ange Personnummer (12 siffror):");
+        if (namn == null || namn.isEmpty) {
+          print("\n **Fel: Namn kan inte vara tomt!**");
+          continue;
+        }
+
+        stdout.write("\n Ange Personnummer (12 siffror): ");
         String? personnummerStr = stdin.readLineSync();
         if (personnummerStr == null || personnummerStr.length != 12 || int.tryParse(personnummerStr) == null) {
           print("\n **Fel: Ange ett giltigt personnummer (12 siffror)!**");
           continue;
         }
+
         int personNummer = int.parse(personnummerStr);
         try {
-          personController.createPerson(namn!, personNummer);
+         Person newPerson = Person(
+            namn: namn, 
+            personNummer: personNummer
+          );
+          personRepo.add(newPerson);
+
+          print("\n **Person skapad framgångsrikt!**");
         } catch (e) {
           print("\n Fel: ${e.toString()}");
         }
         break;
+
       case "2":
-        final persons = personController.showAllPersons();
+        final persons = personRepo.findAll();
         if (persons.isEmpty) {
-          print("\n**Inga Personer hittades**");
+          print("\n**Inga personer hittades**");
         } else {
-          persons.forEach((p) => print("**ID:${p.id}, **Namn: ${p.namn}, **PersonNummer: ${p.personNummer}"));
+          persons.forEach((p) => print("ID: ${p.id}, Namn: ${p.namn}, PersonNummer: ${p.personNummer}"));
         }
         break;
+
       case "3":
         stdout.write("\n Ange personens ID som du vill uppdatera: ");
-        int id = int.parse(stdin.readLineSync()!);
-
-        stdout.write("Ange namn: ");
-        String newName = stdin.readLineSync()!;
-
-        stdout.write("Ange Personnummer: ");
-        int personNumber = int.parse(stdin.readLineSync()!);
+        int? id = int.tryParse(stdin.readLineSync() ?? "");
+        if (id == null) {
+          print("\n **Fel: Ange ett giltigt ID!**");
+          break;
+        }
 
         try {
-          personController.updatePerson(id, newName, personNumber);
+          Person person = personRepo.findById(id);
+          stdout.write("Ange nytt namn: ");
+          String newName = stdin.readLineSync() ?? person.namn;
+
+          stdout.write("Ange nytt Personnummer: ");
+          String? newPersonnummerStr = stdin.readLineSync();
+          int newPersonnummer = (newPersonnummerStr != null && newPersonnummerStr.length == 12 && int.tryParse(newPersonnummerStr) != null)
+              ? int.parse(newPersonnummerStr)
+              : person.personNummer;
+
+         personRepo.update(Person(namn: newName, 
+          personNummer: newPersonnummer, 
+        ));
+
+          print("\n **Person uppdaterad framgångsrikt!**");
         } catch (e) {
           print("\n Fel: ${e.toString()}");
         }
         break;
+
       case "4":
         stdout.write("\n Ange ID på personen du vill ta bort: ");
-        int id = int.parse(stdin.readLineSync()!);
-        personController.deletePerson(id);
-        break;
-
-      case "5":
-        print("\nTillbaka till huvudmenyn...");  
-        return; 
-      default:
-        print("\n Ogiltigt val, försök igen.");
-    }
-  }
-}
-
-void handleParkingPlaces(){
-  while (true) {
-    print("\nDu har valt att hantera Parkeringsplatser. Vad vill du göra?");
-    print("1. Skapa ny parkeringsplats");
-    print("2. Visa alla parkeringsplatser");
-    print("3. Uppdatera parkeringsplats");
-    print("4. Ta bort parkeringsplats");
-    print("5. Tillbaka till huvudmenyn");
-    stdout.write("Välj ett alternativ (1-5): ");
-
-    String? choice = stdin.readLineSync();
-    switch (choice) {
-      case "1":
-        stdout.write("\nAnge parkeringsplatsens ID: ");
-        int? id = int.tryParse(stdin.readLineSync() ?? "");
-        stdout.write("\nAnge Områdeskod eller parkeringsadress: ");
-        String? adress = stdin.readLineSync();
-        stdout.write("\nAnge pris per timme för parkering: ");
-        double? pricePerHour = double.tryParse(stdin.readLineSync() ?? "");
-
-        if (id == null || adress == null || adress.isEmpty || pricePerHour == null) {
-          print("\nFel: Ange giltiga värden för ID, adress och pris per timme!");
-          break;
-        }
-
-        ParkingSpace newSpace = ParkingSpace(id: id, adress: adress, pricePerHour: pricePerHour);
-        parkingSpaceRepository.add(newSpace);
-        print("\nParkeringsplats skapad framgångsrikt!");
-        break;
-
-      case "2":
-        final spaces = parkingSpaceRepository.findAll();
-        if (spaces.isEmpty) {
-          print("\n**Inga parkeringsplatser hittades.**");
-        } else {
-          spaces.forEach((p) => print("ID: ${p.id}, Adress: ${p.adress}, Pris per timme: ${p.pricePerHour} SEK"));
-        }
-        break;
-
-      case "3":
-        stdout.write("\nAnge ID för parkeringsplatsen att uppdatera: ");
-        int? idToUpdate = int.tryParse(stdin.readLineSync() ?? "");
-
-        if (idToUpdate == null) {
-          print("\n**Fel: Ange ett giltigt ID!**");
+        int? deleteId = int.tryParse(stdin.readLineSync() ?? "");
+        if (deleteId == null) {
+          print("\n **Fel: Ange ett giltigt ID!**");
           break;
         }
 
         try {
-              ParkingSpace existingSpace = parkingSpaceRepository.findById(idToUpdate);
-
-              stdout.write("\nAnge ny adress (lämna tomt för att behålla befintlig): ");
-              String? newAdress = stdin.readLineSync();
-              stdout.write("\nAnge nytt pris per timme (lämna tomt för att behålla befintligt): ");
-              String? newPriceInput = stdin.readLineSync();
-              double? newPricePerHour = newPriceInput!.isNotEmpty ? double.tryParse(newPriceInput) : existingSpace.pricePerHour;
-            
-              ParkingSpace updatedSpace = ParkingSpace(
-                id: existingSpace.id,
-                adress: newAdress!.isNotEmpty ? newAdress : existingSpace.adress,
-                pricePerHour: newPricePerHour!,
-            );
-            // Uppdatera parkeringsplatsen i repository
-              parkingSpaceRepository.update(updatedSpace);
-              print("\n**Parkeringsplats uppdaterad!**");
-            } catch (e) {
-                print("\n**Fel vid uppdatering: ${e.toString()}**");
-         }
-        break;
-      case "4":
-        stdout.write("\nAnge ID för parkeringsplatsen att ta bort: ");
-        int? idToDelete = int.tryParse(stdin.readLineSync() ?? "");
-
-        if (idToDelete == null) {
-          print("\n**Fel: Ange ett giltigt ID!**");
-          break;
+          personRepo.deleteById(deleteId);
+          print("\n **Person borttagen framgångsrikt!**");
+        } catch (e) {
+          print("\n Fel: ${e.toString()}");
         }
-        parkingSpaceRepository.deleteById(idToDelete);
-        print("\n**Parkeringsplats borttagen!**");
         break;
 
       case "5":
@@ -212,12 +154,13 @@ void handleParkingPlaces(){
         return;
 
       default:
-        print("\n**Ogiltigt val, försök igen.**");
+        print("\n Ogiltigt val, försök igen.");
     }
   }
 }
 
-void handleVehicles() {
+
+void handleVehicles(VehicleRepository vehicleRepo, PersonRepository personRepo) {
   while (true) {
     print("\n Du har valt att hantera Fordon. Vad vill du göra?");
     print("1. Registrera nytt fordon");
@@ -235,7 +178,7 @@ void handleVehicles() {
         stdout.write("\nAnge person-ID för fordonsägaren: ");
         int? ownerId = int.tryParse(stdin.readLineSync() ?? "");
 
-        stdout.write("\nAnge fordonstyp (1 = Bil, 2 = Motorcykel,3 LastBil): ");
+        stdout.write("\nAnge fordonstyp (1 = Bil, 2 = Motorcykel, 3 = Lastbil): ");
         int? typeChoice = int.tryParse(stdin.readLineSync() ?? "");
         VehicleType? vehicleType;
 
@@ -243,12 +186,13 @@ void handleVehicles() {
           vehicleType = VehicleType.Car;
         } else if (typeChoice == 2) {
           vehicleType = VehicleType.Motorcycle;
-        } else if (typeChoice == 3){
+        } else if (typeChoice == 3) {
           vehicleType = VehicleType.Lastbil;
-        }else{
+        } else {
           print("\n**Fel: Ogiltig fordonstyp!**");
           break;
         }
+
         stdout.write("\nAnge bilens färg: ");
         String? color = stdin.readLineSync();
 
@@ -256,28 +200,37 @@ void handleVehicles() {
           print("\n**Fel: Alla fält måste fyllas i!**");
           break;
         }
+
         try {
-          Person owner = personController.personRepository.findById(ownerId);
-           if (owner == null) {
-              print("\n Fel: Ägaren med ID $ownerId hittades inte!");
-              break;
-            }
-          Vehicle newVehicle = vehicleController.createVehicle(regNum,vehicleType,owner,color);         
-          print("\n Fordon registrerat framgångsrikt!");
+          Person? owner = personRepo.findById(ownerId);
+          if (owner == null) {
+            print("\nFel: Ägaren med ID $ownerId hittades inte!");
+            break;
+          }
+          Car newCar = Car(
+            registreringsNummer: regNum,
+            typ: vehicleType, 
+            owner: owner,
+            color: color,
+            id: vehicleRepo.getNextId(),
+          );
+
+  vehicleRepo.add(newCar);
+          print("\nFordon registrerat framgångsrikt!");
         } catch (e) {
           print("\nFel: ${e.toString()}");
         }
-      break;
+        break;
 
       case "2":
-        final vehicles = vehicleController.getAllVehicles();
-        vehicles.forEach((v) {
-          if (v is Car) {
+        final vehicles = vehicleRepo.findAll();
+        if (vehicles.isEmpty) {
+          print("\nInga fordon hittades.");
+        } else {
+          for (var v in vehicles) {
             print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ.name}, Färg: ${v.color}");
-          } else {
-            print("Reg.nr: ${v.registreringsNummer}, Ägare: ${v.owner.namn}, Typ: ${v.typ.name}");
           }
-        });
+        }
         break;
 
       case "3":
@@ -288,27 +241,102 @@ void handleVehicles() {
           print("\nFel: Ange ett giltigt registreringsnummer!");
           break;
         }
-        vehicleController.deleteVehicle(regNumToDelete);
-        print("\nFordon borttaget!");
-        break;
+        try {
+             Vehicle vehicleToDelete = vehicleRepo.getVehicleByRegNum(regNumToDelete)!;
+            vehicleRepo.deleteById(vehicleToDelete.id);
+            print("\nFordon borttaget!");
+          } catch (e) {
+            print("\nFel: ${e.toString()}");
+          }
       case "4":
         print("\nTillbaka till huvudmenyn...");
         return;
+
       default:
         print("\nOgiltigt val, försök igen.");
     }
   }
 }
 
- void handleParking(){
- while (true) {
+void handleParkingPlaces(ParkingSpaceRepository parkingSpaceRepo) {
+  while (true) {
+    print("\nDu har valt att hantera Parkeringsplatser. Vad vill du göra?");
+    print("1. Lägg till en ny parkeringsplats");
+    print("2. Visa alla parkeringsplatser");
+    print("3. Ta bort en parkeringsplats");
+    print("4. Tillbaka till huvudmenyn");
+    stdout.write("Välj ett alternativ (1-4): ");
+
+    String? choice = stdin.readLineSync();
+    switch (choice) {
+      case "1":
+        stdout.write("\nAnge platsens ID: ");
+        int? spaceId = int.tryParse(stdin.readLineSync() ?? "");
+         
+         stdout.write("\nAnge adress för parkeringsplatsen: ");
+        String? adress = stdin.readLineSync();
+
+        if (adress == null || adress.isEmpty) {
+          print("\nFel: Ange en giltig adress!");
+          break;
+        }
+
+        stdout.write("\nAnge pris per timme för parkeringsplatsen: ");
+        double? pricePerHour = double.tryParse(stdin.readLineSync() ?? "");
+
+        if (spaceId == null) {
+          print("\nFel: Ange ett giltigt ID!");
+          break;
+        }
+        try {
+          parkingSpaceRepo.add(ParkingSpace(id: spaceId, adress: adress, pricePerHour: pricePerHour));
+          print("\nParkeringsplats skapad framgångsrikt!");
+        } catch (e) {
+          print("\nFel: ${e.toString()}");
+        }
+        break;
+
+      case "2":
+        final spaces = parkingSpaceRepo.findAll();
+        if (spaces.isEmpty) {
+          print("\nInga parkeringsplatser hittades.");
+        } else {
+          spaces.forEach((s) => print("Plats ID: ${s.id}"));
+        }
+        break;
+
+      case "3":
+        stdout.write("\nAnge ID på parkeringsplatsen att ta bort: ");
+        int? spaceIdToDelete = int.tryParse(stdin.readLineSync() ?? "");
+
+        if (spaceIdToDelete == null) {
+          print("\nFel: Ange ett giltigt ID!");
+          break;
+        }
+
+        parkingSpaceRepo.deleteById(spaceIdToDelete);
+        print("\nParkeringsplats borttagen!");
+        break;
+
+      case "4":
+        print("\nTillbaka till huvudmenyn...");
+        return;
+
+      default:
+        print("\nOgiltigt val, försök igen.");
+    }
+  }
+}
+
+void handleParking(ParkingRepository parkingRepo, VehicleRepository vehicleRepo, ParkingSpaceRepository parkingSpaceRepo) {
+  while (true) {
     print("\nDu har valt att hantera Parkeringar. Vad vill du göra?");
     print("1. Skapa ny parkering");
     print("2. Visa alla parkeringar");
     print("3. Ta bort parkering");
     print("4. Beräkna kostnad för parkeringen");
     print("5. Tillbaka till huvudmenyn");
-    stdout.write("Välj ett alternativ (1-4): ");
+    stdout.write("Välj ett alternativ (1-5): ");
 
     String? choice = stdin.readLineSync();
     switch (choice) {
@@ -317,23 +345,29 @@ void handleVehicles() {
         int? parkingSpaceId = int.tryParse(stdin.readLineSync() ?? "");
         stdout.write("\nAnge registreringsnummer för fordonet: ");
         String? regNum = stdin.readLineSync();
-        stdout.write("\n Ange starttid (YYYY-MM-DD HH:MM): ");
+        stdout.write("\nAnge starttid (YYYY-MM-DD HH:MM): ");
         String? startTime = stdin.readLineSync();
 
-        if (parkingSpaceId == null || regNum == null || regNum.isEmpty || startTime == null || startTime.isEmpty) {
+        if (parkingSpaceId == null || regNum == null || startTime == null) {
           print("\nFel: Alla fält måste fyllas i!");
           break;
         }
 
         try {
-          Vehicle vehicle = vehicleController.getVehicleByRegNum(regNum);
-          ParkingSpace parkingSpace = parkingSpaceRepository.findById(parkingSpaceId);
-
-          parkingController.createParking(
-            vehicle,
-            parkingSpace,
-            DateTime.parse(startTime) 
+          Vehicle? vehicle = vehicleRepo.getVehicleByRegNum(regNum);
+           if (vehicle == null) {
+              print("\nFel: Fordonet med registreringsnummer $regNum hittades inte!");
+              break;
+            }
+          
+          ParkingSpace parkingSpace = parkingSpaceRepo.findById(parkingSpaceId);
+          Parking parking = Parking(
+            id:parkingRepo.getNextId(),
+            fordon: vehicle,
+            parkingSpace: parkingSpace,
+            startTime: DateTime.parse(startTime),
           );
+          parkingRepo.add(parking);
           print("\nParkering skapad framgångsrikt!");
         } catch (e) {
           print("\nFel: ${e.toString()}");
@@ -341,12 +375,11 @@ void handleVehicles() {
         break;
 
       case "2":
-        final parkings = parkingController.listAllParking();
+        final parkings = parkingRepo.findAll();
         if (parkings.isEmpty) {
           print("\nInga parkeringar hittades.");
         } else {
-          parkings.forEach((p) => print(
-              "ID: ${p.id}, Fordon: ${p.vehicle.registreringsNummer}, Parkeringsplats: ${p.parkingSpace.id}, Starttid: ${p.startTime}"));
+          parkings.forEach((p) => print("ID: ${p.id}, Fordon: ${p.vehicle.registreringsNummer}, Parkeringsplats: ${p.parkingSpace.id}, Starttid: ${p.startTime}"));
         }
         break;
 
@@ -355,45 +388,15 @@ void handleVehicles() {
         int? parkingId = int.tryParse(stdin.readLineSync() ?? "");
 
         if (parkingId == null) {
-          print("\nFel: Ange ett giltigt parkerings-ID!");
+          print("\nFel: Ange ett giltigt ID!");
           break;
         }
 
-        try {
-          parkingController.deleteParking(parkingId);
-          print("\nParkering borttagen!");
-        } catch (e) {
-          print("\nFel: ${e.toString()}");
-        }
-        break;
-      
-      case "4":
-        stdout.write("\nAnge ID för parkeringen du vill beräkna kostnaden för: ");
-        int? parkingId = int.tryParse(stdin.readLineSync() ?? "");
-
-        if (parkingId == null) {
-          print("\n Fel: Ange ett giltigt parkerings-ID!");
-          break;
-        }
-          stdout.write("\nAnge sluttid (YYYY-MM-DD HH:MM): ");
-          String? endTime = stdin.readLineSync();
-
-          if (endTime == null || endTime.isEmpty) {
-            print("\n Fel: Sluttid måste anges!");
-            break;
-          }
-
-        try {
-          parkingController.endParking(parkingId, endTime);
-          double cost = parkingController.calculateParkingCost(parkingId, endTime);
-            print("\nParkeringskostnad: ${cost.toStringAsFixed(2)} SEK");
-          } catch (e) {
-            print("\nFel: ${e.toString()}");
-        }
+        parkingRepo.deleteById(parkingId);
+        print("\nParkering borttagen!");
         break;
 
       case "5":
-        print("\nTillbaka till huvudmenyn...");
         return;
 
       default:
@@ -401,32 +404,3 @@ void handleVehicles() {
     }
   }
 }
-
- void handleCalculateParkingCost() {
-  stdout.write("\nAnge parkerings-ID: ");
-  int? parkingId = int.tryParse(stdin.readLineSync() ?? "");
-
-  if (parkingId == null) {
-    print("\nFel: Ange ett giltigt parkerings-ID!");
-    return;
-  }
-  stdout.write("\nAnge sluttid (YYYY-MM-DD HH:MM): ");
-  String? endTime = stdin.readLineSync();
-
-  if (endTime == null || endTime.isEmpty) {
-    print("\nFel: Sluttid måste anges!");
-    return;
-  }
-
-  try {
-    double cost = parkingController.calculateParkingCost(parkingId, endTime);
-    if (cost > 0) {
-      print("\nTotal parkeringskostnad: ${cost.toStringAsFixed(2)} SEK");
-    } else {
-      print("\nFel: Parkeringen kan inte beräknas.");
-    }
-  } catch (e) {
-    print("\nFel: ${e.toString()}");
-  }
-}
-

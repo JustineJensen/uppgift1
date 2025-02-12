@@ -1,5 +1,7 @@
+import 'package:uppgift1/models/person.dart';
 import 'package:uppgift1/models/vehicle.dart';
-import 'package:uppgift1/controllers/repository.dart';
+import 'package:uppgift1/models/vehicleType.dart';
+import 'package:uppgift1/repositories/repository.dart';
 
 class VehicleRepository extends Repository<Vehicle,int> {
   final List<Vehicle> _vehicles =[];
@@ -42,5 +44,10 @@ class VehicleRepository extends Repository<Vehicle,int> {
   var vehicle = _vehicles.firstWhere((v) => v.registreringsNummer == regNum, orElse: () => throw Exception('Fordon inte hittat'));
     return vehicle;
 }
-
+ Vehicle? getVehicleByRegNum(String regNum) {
+    return _vehicles.firstWhere(
+      (vehicle) => vehicle.registreringsNummer == regNum,
+      orElse: () => throw Exception("Registrerings Nummer hittades inte"),
+    );
+  }
 }

@@ -10,10 +10,9 @@ class Person {
  Person({
     required String namn,
     required int personNummer,
-    required int id,
   })  : _namn = namn,
         _personNummer = personNummer,
-        _id = id;
+        _id = 0;
 
   // Getters
   String get namn => _namn;

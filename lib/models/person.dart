@@ -2,17 +2,20 @@ import 'dart:convert';
 
 import 'package:uppgift1/models/vehicle.dart';
 class Person {
+  static int _idCounter = 0;
+  late int _id;
   String _namn;
   int _personNummer;
-  int _id;
 
   // Constructor
- Person({
+  Person({
     required String namn,
     required int personNummer,
+    int? id, 
   })  : _namn = namn,
-        _personNummer = personNummer,
-        _id = 0;
+        _personNummer = personNummer {
+    _id = id ?? ++_idCounter; 
+  }
 
   // Getters
   String get namn => _namn;
@@ -21,21 +24,15 @@ class Person {
 
   // Setters
   set namn(String namn) => _namn = namn;
-  set personNummer(int personNummer){
- if(personNummer.toString().length==12){
-  _personNummer = personNummer;
- }else{
-  throw Exception("Person number must be 12 digits");
- }
-  } 
 
-  set id(int id) {
-    if (id > 0) {
-      _id = id;
+  set personNummer(int personNummer) {
+    if (personNummer.toString().length == 12) {
+      _personNummer = personNummer;
     } else {
-      throw Exception("ID must be positive");
+      throw Exception("Person number must be 12 digits");
     }
   }
+
   @override
   String toString() {
     return 'Person(namn: $namn, personNummer: $personNummer, id: $id)';

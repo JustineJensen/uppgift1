@@ -7,11 +7,15 @@ class ParkingSpaceRepository extends Repository<ParkingSpace,int> {
      int _nextId=1;
    
      @override
-     ParkingSpace add(ParkingSpace entity) {
-     entity.id = _nextId ++;
-     _parkingSpace.add(entity);
-     return entity;
-     }
+    ParkingSpace add(ParkingSpace entity) {
+    ParkingSpace parkingSpace = ParkingSpace(
+      adress: entity.adress,
+      pricePerHour: entity.pricePerHour ?? 0.0, 
+      id: _nextId++,  
+    );
+    _parkingSpace.add(parkingSpace);
+    return parkingSpace;
+  }
    
      @override
      void deleteById(int id) {

@@ -1,15 +1,16 @@
 class ParkingSpace {
   late int _id;
   late String _adress;
-  final double?  _pricePerHour;
+  final double _pricePerHour;
   
 //constructor
 ParkingSpace({
-required int id,
 required  String adress, 
 required double pricePerHour,
+required int id,
 
-}) : _id = 0,
+}) :
+_id = id,
 _adress = adress,
 _pricePerHour = pricePerHour;
 
@@ -19,7 +20,7 @@ String get adress => _adress;
 double? get pricePerHour => _pricePerHour;
 
 //Setters
-set id (int id)=> _id =id;
+//set id (int id)=> _id =id;
 set adress(String adress)=>_adress= adress;
 
 @override

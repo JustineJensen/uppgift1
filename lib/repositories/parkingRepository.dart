@@ -13,7 +13,7 @@ class ParkingRepository extends Repository<Parking,int> {
   }
 
   @override
-  void deleteById(int id) {
+  Future<void> deleteById(int id) async {
     _parkings.removeWhere((Parking)=>Parking.id == id);
   }
 
@@ -28,7 +28,7 @@ class ParkingRepository extends Repository<Parking,int> {
     throw Exception("Parking med ID $id hittades inte"),);
   }
   @override
-  void update(Parking entity) {
+  Future <void> update(Parking entity) async {
     int index = _parkings.indexWhere((p)=>p.id ==entity.id);
     if(index != -1){
       _parkings[index] = entity;

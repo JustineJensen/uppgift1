@@ -18,7 +18,7 @@ class ParkingSpaceRepository extends Repository<ParkingSpace,int> {
   }
    
      @override
-     void deleteById(int id) {
+    Future< void >deleteById(int id) async {
        _parkingSpace.removeWhere((space)=> space.id == id);
      }
    
@@ -34,7 +34,7 @@ class ParkingSpaceRepository extends Repository<ParkingSpace,int> {
      }
    
      @override
-     void update(ParkingSpace entity) {
+     Future <void> update(ParkingSpace entity) async{
        int index = _parkingSpace.indexWhere((space)=>space.id == entity.id);
        if(index != -1){
         _parkingSpace[index] = entity;

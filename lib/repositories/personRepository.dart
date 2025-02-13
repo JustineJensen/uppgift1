@@ -15,7 +15,7 @@ Person add(Person person) {
 
 
   @override
-  void deleteById(int id) {
+ Future <void> deleteById(int id) async {
     _persons.removeWhere((person)=> person.id ==id);
   }
 
@@ -31,7 +31,7 @@ Person add(Person person) {
   }
 
   @override
-void update(Person entity) {
+Future <void> update(Person entity) async {
   int index = _persons.indexWhere((p) => p.id == entity.id);
   if (index != -1) {
     print("Updating person with ID: ${entity.id}");

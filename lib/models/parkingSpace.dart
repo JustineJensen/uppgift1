@@ -24,7 +24,7 @@ double? get pricePerHour => _pricePerHour;
 set adress(String adress)=>_adress= adress;
 
 @override
-String toString(){
+Future<String> toStringAsyc() async{
   return'ParkingSpace{id: $_id}, adress: $_adress, pricePerHour: $_pricePerHour}';
 }
 

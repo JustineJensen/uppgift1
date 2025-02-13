@@ -34,7 +34,7 @@ class Person {
   }
 
   @override
-  String toString() {
+  Future <String>toStringAsync() async{
     return 'Person(namn: $namn, personNummer: $personNummer, id: $id)';
   }
 }

@@ -36,7 +36,7 @@ class Parking {
   set endTime (DateTime? endTime)=> _endTime = endTime;
 
   @override
-  String toString(){
+  Future <String> toStringAsync() async{
     return 'Parking{id: $_id, vehicle: ${_fordon.registreringsNummer}, parkingSpace: ${_parkingSpace.id}, startTime: $_startTime, endTime: $_endTime}';
     }
 } 

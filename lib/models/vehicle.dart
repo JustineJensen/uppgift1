@@ -28,7 +28,7 @@ import 'package:uppgift1/models/vehicleType.dart';
   set owner (Person owner) => _owner = owner;
 
 @override
-  String toString() {
+  Future<String> toStringAsync() async{
     return 'Vehicle{id:$_id,registreringsnummer: $registreringsNummer, typ: $typ, owner: ${owner.namn}}';
   }
   }
